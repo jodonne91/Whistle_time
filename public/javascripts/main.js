@@ -47,10 +47,10 @@ var modifyTime = function(input_time, offset)
 	var output_time;
 	var time = (input_time[0] + input_time[1])*1;
 
-	if ( $('#dst').is(':checked') )
-	{
-		offset++;
-	}
+	// if ( $('#dst').is(':checked') )
+	// {
+	// 	offset++;
+	// }
 
 	adjusted_time = time + offset;  
 
