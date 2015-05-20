@@ -26,6 +26,8 @@ $(function(){
 
 });
 
+
+
 var getDuration = function()
 {
 	if ( $('#duration-select').find('#1').is(':checked') )
@@ -74,6 +76,8 @@ var modifyTime = function(input_time, offset, duration)
 	var minute = (input_time[3] + input_time[4])*1;
 	var end_hour;
 	var end_minute;
+	var period;
+	var end_period;
 
 	hour = hour + offset;
 	end_hour = hour;
@@ -88,6 +92,7 @@ var modifyTime = function(input_time, offset, duration)
 		end_minute -= 60;
 	}
 
+	//convert minutes to proper string
 	if ( minute < 10 )
 	{
 		minute = '0' + minute;
@@ -96,7 +101,7 @@ var modifyTime = function(input_time, offset, duration)
 	{
 		minute = minute + '';
 	}
-
+	//convert end minutes to propor string
 	if ( end_minute < 10 )
 	{
 		end_minute = '0' + end_minute;
@@ -105,37 +110,83 @@ var modifyTime = function(input_time, offset, duration)
 	{
 		end_minute = end_minute + '';
 	}
-
-	console.log('end hour: ' + end_hour, 'end minute: ' + end_minute)
-
-	if ( hour > 24)
+	//convert hour to proper string
+	if ( hour > 24 )
 	{
-		output_time = hour - 24 + ':' + minute + ' AM' + ' - ' + end_hour + ':' + end_minute + ' AM';
+		hour = hour - 24 + '';
+		period = 'AM';
 	}
 	else if ( hour === 24 )
 	{
-		output_time = 12 + ':' + minute + ' AM' + ' - ' + end_hour + ':' + end_minute + ' AM';
+		hour = 12 + '';
+		period = 'AM';
 	}
 	else if ( hour > 12 )
 	{
-		output_time = hour - 12 + ':' + minute + ' PM' + ' - ' + end_hour + ':' + end_minute + ' PM';
+		hour = hour - 12 + '';
+		period = 'PM';
 	}
 	else if ( hour === 12 )
 	{
-		output_time = hour + ':' + minute + ' PM' + ' - ' + end_hour + ':' + end_minute + ' PM';
+		hour = hour + '';
+		period = 'PM'
 	}
-	else if ( hour < 0 ) 
+	else if ( hour < 0 )
 	{
-		output_time = hour + 12 + ':' + minute + ' PM' + ' - ' + end_hour + ':' + end_minute + ' PM';
+		hour = hour + 12 + '';
+		period = 'PM';
 	}
-	else if ( hour == 0)
+	else if ( hour === 0 )
 	{
-		output_time = hour + 12 + ':' + minute + ' AM' + ' - ' + end_hour + ':' + end_minute + ' AM';
+		hour = 12 + '';
+		period = 'AM';
 	}
 	else
 	{
-		output_time = hour + ':' + minute + ' AM' + ' - ' + end_hour + ':' + end_minute + ' AM';
+		hour = hour + '';
+		period = 'AM';
 	}
+	//convert end hour to proper string
+	if ( end_hour > 24 )
+	{
+		end_hour = end_hour - 24 + '';
+		end_period = 'AM';
+	}
+	else if ( end_hour === 24 )
+	{
+		end_hour = 12 + '';
+		end_period = 'AM';
+	}
+	else if ( end_hour > 12 )
+	{
+		end_hour = end_hour - 12 + '';
+		end_period = 'PM';
+	}
+	else if ( end_hour === 12 )
+	{
+		end_hour = end_hour + '';
+		end_period = 'PM'
+	}
+	else if ( end_hour < 0 )
+	{
+		end_hour = end_hour + 12 + '';
+		end_period = 'PM';
+	}
+	else if ( end_hour === 0 )
+	{
+		end_hour = 12 + '';
+		end_period = 'AM';
+	}
+	else
+	{
+		end_hour = end_hour + '';
+		end_period = 'AM';
+	}
+
+	console.log('end hour: ' + end_hour, 'end minute: ' + end_minute)
+
+	//create string, example:  12:00 AM - 12:00 PM
+	output_time = hour + ':' + minute + ' ' + period + ' - ' + end_hour + ':' + end_minute + ' ' + end_period;
 
 	return output_time;
 }
@@ -184,6 +235,11 @@ var createTableRow = function(input_time, time_zone, duration)
 		alert('time is not valid; Error Code: 4Er5T10-13');
 		return;
 	}
+	if ( !checkExisting(input_time, time_zone))
+	{
+		alert('time already scheduled')
+		return;
+	}
 
 	console.log(input_time, duration);  //debugging
 
@@ -197,6 +253,19 @@ var createTableRow = function(input_time, time_zone, duration)
 	
 	return html;
 
+}
+
+var checkExisting = function(time, time_zone)
+{
+	for ( var i = 0 ; i < schedule.length ; i++ )
+	{
+		if ( schedule[i] === time )
+		{
+			return false;
+		}
+	}
+	schedule.push(time);
+	return true;
 }
 
 var deleteButtonListener = function()
