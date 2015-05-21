@@ -92,7 +92,7 @@
 		    <div class="input-group">
 				<input type="email" class="form-control" placeholder="Recipient Email">
 					<span class="input-group-btn">
-						<button class="btn btn-default" id='send-email' type="button">Generate Email</button>
+						<button href='/respond' class="btn btn-default" id='send-email' type="button">Generate Email</button>
 					</span>
 		    </div>
 		</div>
